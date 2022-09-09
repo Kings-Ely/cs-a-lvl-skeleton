@@ -1,20 +1,22 @@
-#Skeleton Program code for the AQA A Level Paper 1 Summer 2023 examination
-#this code should be used in conjunction with the Preliminary Material
-#written by the AQA Programmer Team
-#developed in the Python 3.9 programming environment
+# Skeleton Program code for the AQA A Level Paper 1 Summer 2023 examination
+# this code should be used in conjunction with the Preliminary Material
+# written by the AQA Programmer Team
+# developed in the Python 3.9 programming environment
 
 import random
 
+
 class Dastan:
-    def __init__(self, R, C, NoOfPieces):
+    def __init__(self, rows: int, columns: int, NoOfPieces: int):
         self._Board = []
-        self._Players = []
+        self._Players = [
+            Player("Player One", 1),
+            Player("Player Two", -1)
+        ]
         self._MoveOptionOffer = []
-        self._Players.append(Player("Player One", 1))
-        self._Players.append(Player("Player Two", -1))
         self.__CreateMoveOptions()
-        self._NoOfRows = R
-        self._NoOfColumns = C
+        self._NoOfRows = rows
+        self._NoOfColumns = columns
         self._MoveOptionOfferPosition = 0
         self.__CreateMoveOptionOffer()
         self.__CreateBoard()
@@ -95,11 +97,14 @@ class Dastan:
         for S in self._Board:
             PieceInSquare = S.GetPieceInSquare()
             if PieceInSquare is not None:
-                if S.ContainsKotla() and PieceInSquare.GetTypeOfPiece() == "mirza" and not PieceInSquare.GetBelongsTo().SameAs(S.GetBelongsTo()):
+                if S.ContainsKotla() and PieceInSquare.GetTypeOfPiece() == "mirza" and not PieceInSquare.GetBelongsTo().SameAs(
+                        S.GetBelongsTo()):
                     return True
-                elif PieceInSquare.GetTypeOfPiece() == "mirza" and PieceInSquare.GetBelongsTo().SameAs(self._Players[0]):
+                elif PieceInSquare.GetTypeOfPiece() == "mirza" and PieceInSquare.GetBelongsTo().SameAs(
+                        self._Players[0]):
                     Player1HasMirza = True
-                elif PieceInSquare.GetTypeOfPiece() == "mirza" and PieceInSquare.GetBelongsTo().SameAs(self._Players[1]):
+                elif PieceInSquare.GetTypeOfPiece() == "mirza" and PieceInSquare.GetBelongsTo().SameAs(
+                        self._Players[1]):
                     Player2HasMirza = True
         return not (Player1HasMirza and Player2HasMirza)
 
@@ -109,7 +114,8 @@ class Dastan:
 
     def __UseMoveOptionOffer(self):
         ReplaceChoice = int(input("Choose the move option from your queue to replace (1 to 5): "))
-        self._CurrentPlayer.UpdateMoveOptionQueueWithOffer(ReplaceChoice - 1, self.__CreateMoveOption(self._MoveOptionOffer[self._MoveOptionOfferPosition], self._CurrentPlayer.GetDirection()))
+        self._CurrentPlayer.UpdateMoveOptionQueueWithOffer(ReplaceChoice - 1, self.__CreateMoveOption(
+            self._MoveOptionOffer[self._MoveOptionOfferPosition], self._CurrentPlayer.GetDirection()))
         self._CurrentPlayer.ChangeScore(-(10 - (ReplaceChoice * 2)))
         self._MoveOptionOfferPosition = random.randint(0, 4)
 
@@ -120,7 +126,8 @@ class Dastan:
         return ScoreAdjustment
 
     def __UpdatePlayerScore(self, PointsForPieceCapture):
-        self._CurrentPlayer.ChangeScore(self.__GetPointsForOccupancyByPlayer(self._CurrentPlayer) + PointsForPieceCapture)
+        self._CurrentPlayer.ChangeScore(
+            self.__GetPointsForOccupancyByPlayer(self._CurrentPlayer) + PointsForPieceCapture)
 
     def __CalculatePieceCapturePoints(self, FinishSquareReference):
         if self._Board[self.__GetIndexOfSquare(FinishSquareReference)].GetPieceInSquare() is not None:
@@ -162,7 +169,8 @@ class Dastan:
         self.__DisplayFinalResult()
 
     def __UpdateBoard(self, StartSquareReference, FinishSquareReference):
-        self._Board[self.__GetIndexOfSquare(FinishSquareReference)].SetPiece(self._Board[self.__GetIndexOfSquare(StartSquareReference)].RemovePiece())
+        self._Board[self.__GetIndexOfSquare(FinishSquareReference)].SetPiece(
+            self._Board[self.__GetIndexOfSquare(StartSquareReference)].RemovePiece())
 
     def __DisplayFinalResult(self):
         if self._Players[0].GetScore() == self._Players[1].GetScore():
@@ -296,6 +304,7 @@ class Dastan:
         self._Players[1].AddToMoveOptionQueue(self.__CreateMoveOption("faujdar", -1))
         self._Players[1].AddToMoveOptionQueue(self.__CreateMoveOption("cuirassier", -1))
 
+
 class Piece:
     def __init__(self, T, B, P, S):
         self._TypeOfPiece = T
@@ -314,6 +323,7 @@ class Piece:
 
     def GetPointsIfCaptured(self):
         return self._PointsIfCaptured
+
 
 class Square:
     def __init__(self):
@@ -347,6 +357,7 @@ class Square:
         else:
             return False
 
+
 class Kotla(Square):
     def __init__(self, P, S):
         super(Kotla, self).__init__()
@@ -357,15 +368,18 @@ class Kotla(Square):
         if self._PieceInSquare is None:
             return 0
         elif self._BelongsTo.SameAs(CurrentPlayer):
-            if CurrentPlayer.SameAs(self._PieceInSquare.GetBelongsTo()) and (self._PieceInSquare.GetTypeOfPiece() == "piece" or self._PieceInSquare.GetTypeOfPiece() == "mirza"):
+            if CurrentPlayer.SameAs(self._PieceInSquare.GetBelongsTo()) and (
+                    self._PieceInSquare.GetTypeOfPiece() == "piece" or self._PieceInSquare.GetTypeOfPiece() == "mirza"):
                 return 5
             else:
                 return 0
         else:
-            if CurrentPlayer.SameAs(self._PieceInSquare.GetBelongsTo()) and (self._PieceInSquare.GetTypeOfPiece() == "piece" or self._PieceInSquare.GetTypeOfPiece() == "mirza"):
+            if CurrentPlayer.SameAs(self._PieceInSquare.GetBelongsTo()) and (
+                    self._PieceInSquare.GetTypeOfPiece() == "piece" or self._PieceInSquare.GetTypeOfPiece() == "mirza"):
                 return 1
             else:
                 return 0
+
 
 class MoveOption:
     def __init__(self, N):
@@ -388,6 +402,7 @@ class MoveOption:
                 return True
         return False
 
+
 class Move:
     def __init__(self, R, C):
         self._RowChange = R
@@ -398,6 +413,7 @@ class Move:
 
     def GetColumnChange(self):
         return self._ColumnChange
+
 
 class MoveOptionQueue:
     def __init__(self):
@@ -425,6 +441,7 @@ class MoveOptionQueue:
     def GetMoveOptionInPosition(self, Pos):
         return self.__Queue[Pos]
 
+
 class Player:
     def __init__(self, N, D):
         self.__Score = 100
@@ -441,7 +458,8 @@ class Player:
             return False
 
     def GetPlayerStateAsString(self):
-        return self.__Name + "\n" + "Score: " + str(self.__Score) + "\n" + "Move option queue: " + self.__Queue.GetQueueAsString() + "\n"
+        return self.__Name + "\n" + "Score: " + str(
+            self.__Score) + "\n" + "Move option queue: " + self.__Queue.GetQueueAsString() + "\n"
 
     def AddToMoveOptionQueue(self, NewMoveOption):
         self.__Queue.Add(NewMoveOption)
@@ -468,11 +486,13 @@ class Player:
         Temp = self.__Queue.GetMoveOptionInPosition(Pos - 1)
         return Temp.CheckIfThereIsAMoveToSquare(StartSquareReference, FinishSquareReference)
 
+
 def Main():
     ThisGame = Dastan(6, 6, 4)
     ThisGame.PlayGame()
     print("Goodbye!")
     input()
+
 
 if __name__ == "__main__":
     Main()
