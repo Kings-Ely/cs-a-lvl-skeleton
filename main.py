@@ -136,8 +136,12 @@ class Dastan:
 
     def PlayGame(self):
         GameOver = False
+        # keep running this loop until the game exits
         while not GameOver:
+
+            # 'print' the current state of the game
             self.__DisplayState()
+
             SquareIsValid = False
             Choice = 0
             while Choice < 1 or Choice > 3:
@@ -145,14 +149,19 @@ class Dastan:
                 if Choice == 9:
                     self.__UseMoveOptionOffer()
                     self.__DisplayState()
+
             while not SquareIsValid:
                 StartSquareReference = self.__GetSquareReference("containing the piece to move")
                 SquareIsValid = self.__CheckSquareIsValid(StartSquareReference, True)
+
             SquareIsValid = False
+
             while not SquareIsValid:
                 FinishSquareReference = self.__GetSquareReference("to move to")
                 SquareIsValid = self.__CheckSquareIsValid(FinishSquareReference, False)
+
             MoveLegal = self._CurrentPlayer.CheckPlayerMove(Choice, StartSquareReference, FinishSquareReference)
+
             if MoveLegal:
                 PointsForPieceCapture = self.__CalculatePieceCapturePoints(FinishSquareReference)
                 self._CurrentPlayer.ChangeScore(-(Choice + (2 * (Choice - 1))))
@@ -160,10 +169,12 @@ class Dastan:
                 self.__UpdateBoard(StartSquareReference, FinishSquareReference)
                 self.__UpdatePlayerScore(PointsForPieceCapture)
                 print("New score: " + str(self._CurrentPlayer.GetScore()) + "\n")
+
             if self._CurrentPlayer.SameAs(self._Players[0]):
                 self._CurrentPlayer = self._Players[1]
             else:
                 self._CurrentPlayer = self._Players[0]
+
             GameOver = self.__CheckIfGameOver()
         self.__DisplayState()
         self.__DisplayFinalResult()
@@ -352,10 +363,7 @@ class Square:
         return self._BelongsTo
 
     def ContainsKotla(self):
-        if self._Symbol == "K" or self._Symbol == "k":
-            return True
-        else:
-            return False
+        return False
 
 
 class Kotla(Square):
@@ -380,6 +388,8 @@ class Kotla(Square):
             else:
                 return 0
 
+    def ContainsKotla(self):
+        return self._Symbol == "K" or self._Symbol == "k"
 
 class MoveOption:
     def __init__(self, N):
@@ -452,10 +462,7 @@ class Player:
     def SameAs(self, APlayer):
         if APlayer is None:
             return False
-        elif APlayer.GetName() == self.__Name:
-            return True
-        else:
-            return False
+        return APlayer.GetName() == self.__Name
 
     def GetPlayerStateAsString(self):
         return self.__Name + "\n" + "Score: " + str(
@@ -487,12 +494,22 @@ class Player:
         return Temp.CheckIfThereIsAMoveToSquare(StartSquareReference, FinishSquareReference)
 
 
+# the 'entry point' to the application, the thing that (should) get run once at the start
 def Main():
+    # create an instance of the 'Dastan' class
+    # 6 is the number of rows and columns of the board, and 4 is the number of pieces
     ThisGame = Dastan(6, 6, 4)
+    # as the constructor doesn't really do anything (just initialises some variables),
+    # we need to call the 'PlayGame' method to actually start the game
     ThisGame.PlayGame()
+
+    # code which runs after the game has finished
     print("Goodbye!")
     input()
 
 
+# this is to prevent the code from running when imported from another file,
+# and prevent global variables from being created
+# this is where the execution starts, everything else is a function
 if __name__ == "__main__":
     Main()
