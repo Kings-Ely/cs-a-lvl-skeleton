@@ -276,11 +276,11 @@ class Dastan:
 
     def __CreateSarukhMoveOption(self, Direction):
         NewMoveOption = MoveOption("sarukh")
-        NewMoveOption.AddToPossibleMoves(Move(1, 0))
-        NewMoveOption.AddToPossibleMoves(Move(-1, 0))
-        NewMoveOption.AddToPossibleMoves(Move(1, Direction))
-        NewMoveOption.AddToPossibleMoves(Move(-1, Direction))
-        NewMoveOption.AddToPossibleMoves(Move(0, 2 * Direction))
+        NewMoveOption.AddToPossibleMoves(Move(0, 1))
+        NewMoveOption.AddToPossibleMoves(Move(0, -1))
+        NewMoveOption.AddToPossibleMoves(Move(Direction, 1))
+        NewMoveOption.AddToPossibleMoves(Move(Direction, -1))
+        NewMoveOption.AddToPossibleMoves(Move(2 * Direction, 0))
         return NewMoveOption
 
     def __CreateMoveOption(self, Name, Direction):

@@ -7,7 +7,7 @@ from src.Dastan import Dastan
 
 
 # the 'entry point' to the application, the thing that (should) get run once at the start
-def Main():
+def main():
     # create an instance of the 'Dastan' class
     # 6 is the number of rows and columns of the board, and 4 is the number of pieces
     # as the constructor doesn't really do anything (just initialises some variables),
@@ -23,4 +23,4 @@ def Main():
 # and prevent global variables from being created
 # this is where the execution starts, everything else is a function
 if __name__ == "__main__":
-    Main()
+    main()
