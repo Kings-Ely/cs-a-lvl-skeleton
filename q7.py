@@ -108,6 +108,7 @@ class Dastan:
         return SelectedSquare
 
     def __UseMoveOptionOffer(self):
+        self._CurrentPlayer.DecreaseChoiceOptionLeft()
         ReplaceChoice = int(input("Choose the move option from your queue to replace (1 to 5): "))
         self._CurrentPlayer.UpdateMoveOptionQueueWithOffer(ReplaceChoice - 1, self.__CreateMoveOption(self._MoveOptionOffer[self._MoveOptionOfferPosition], self._CurrentPlayer.GetDirection()))
         self._CurrentPlayer.ChangeScore(-(10 - (ReplaceChoice * 2)))
@@ -133,11 +134,15 @@ class Dastan:
             self.__DisplayState()
             SquareIsValid = False
             Choice = 0
-            while Choice < 1 or Choice > 3:
-                Choice = int(input("Choose move option to use from queue (1 to 3) or 9 to take the offer: "))
-                if Choice == 9:
-                    self.__UseMoveOptionOffer()
-                    self.__DisplayState()
+            if self._CurrentPlayer.GetChoiceOptionLeft() == 0:
+                while Choice < 1 or Choice > 3:
+                    Choice = int(input("Choose move option to use from queue (1 to 3): "))
+            else:
+                while Choice < 1 or Choice > 3:
+                    Choice = int(input("Choose move option to use from queue (1 to 3) or 9 to take the offer: "))
+                    if Choice == 9:
+                        self.__UseMoveOptionOffer()
+                        self.__DisplayState()
             while not SquareIsValid:
                 StartSquareReference = self.__GetSquareReference("containing the piece to move")
                 SquareIsValid = self.__CheckSquareIsValid(StartSquareReference, True)
@@ -427,10 +432,18 @@ class MoveOptionQueue:
 
 class Player:
     def __init__(self, N, D):
+        self.__ChoiceOptionLeft = 3
         self.__Score = 100
         self.__Name = N
         self.__Direction = D
         self.__Queue = MoveOptionQueue()
+
+    def GetChoiceOptionLeft(self):
+        return self.__ChoiceOptionLeft
+
+    def DecreaseChoiceOptionLeft(self):
+        self.__ChoiceOptionLeft -= 1
+        print(f'{self.__Name} has {self.__ChoiceOptionLeft} choice options left.')
 
     def SameAs(self, APlayer):
         if APlayer is None:
